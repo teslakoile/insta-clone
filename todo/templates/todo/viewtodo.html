@@ -9,7 +9,7 @@
 {% block content %}
     <div class="row justify-content-center mt-5">
         <div class="col-md-5">
-            <h2>New Todo</h2>
+            <h2>Your Post</h2>
         </div>
     </div>
     <div class="row justify-content-center mt-5">
@@ -30,11 +30,14 @@
                     <textarea name="memo" rows="5" class="form-control" id="memo" >{{ todo.memo }}</textarea>
                 </div>
                 <div class="form-group form-check">
-                    <input type="checkbox" name="important" class="form-check-input" id="important" {% if todo.important %}checked{% endif %}>
-                    <label class="form-check-label" for="important">Important</label>
+                    
                 </div>
                 <button type="submit" class="btn btn-primary">Save</button>
-                <button type="button" class="btn btn-success" onclick="$('#complete').click()">Complete</button>
+                {% if todo.datecompleted is None %}
+                <button type="button" class="btn btn-success" onclick="$('#complete').click()">Like</button>
+                {% else %}
+                <button type="button" class="btn btn-warning" onclick="$('#unlike').click()">Unlike</button>
+                {% endif %}
                 <button type="button" class="btn btn-danger" onclick="$('#delete').click()">Delete</button>
             </form>
         </div>
@@ -42,7 +45,12 @@
     {% if todo.datecompleted is None %}
         <form style='display: none;' method="POST" action="{% url 'completetodo' todo.id %}">
             {% csrf_token %}
-            <button id="complete" type="submit">Complete</button>
+            <button id="complete" type="submit">Like</button>
+        </form>
+    {% else %}
+        <form style='display: none;' method="POST" action="{% url 'unlikepost' todo.id %}">
+            {% csrf_token %}
+            <button id="unlike" type="submit">Like</button>
         </form>
     {% endif %}
     <form style='display: none;' method="POST" action="{% url 'deletetodo' todo.id %}">

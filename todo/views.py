@@ -59,7 +59,7 @@ def createtodo(request):
 
 @login_required
 def currenttodos(request):
-    todos = Todo.objects.filter(user=request.user, datecompleted__isnull=True)
+    todos = Todo.objects.filter(user=request.user)
     return render(request, 'todo/currenttodos.html', {'todos':todos})
 
 @login_required
@@ -86,6 +86,14 @@ def completetodo(request, todo_pk):
     todo = get_object_or_404(Todo, pk=todo_pk, user=request.user)
     if request.method == 'POST':
         todo.datecompleted = timezone.now()
+        todo.save()
+        return redirect('currenttodos')
+
+@login_required
+def unlikepost(request, todo_pk):
+    todo = get_object_or_404(Todo, pk=todo_pk, user=request.user)
+    if request.method == 'POST':
+        todo.datecompleted = None
         todo.save()
         return redirect('currenttodos')
 
